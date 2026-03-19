@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=JetBrains+Mono&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Outfit", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-brand-yellow: #FFC133;
+  --color-brand-blue: #3385FF;
+  --color-brand-pink: #FFB3D9;
+  --color-brand-orange: #FF6633;
+  --color-brand-lime: #BFFF33;
+  --color-brand-dark: #2D0A0A;
+  --color-brand-bg: #FDF9F3;
+}
+
+@layer base {
+  body {
+    @apply bg-brand-bg text-brand-dark font-sans antialiased;
+  }
+}
+
+.arch-mask {
+  clip-path: path('M 0 200 L 0 50 C 0 0 100 0 100 50 L 100 200 Z');
+  /* Note: This is a simplified path for a 100x200 area, will need adjustment for responsive */
+}
+
+.arch-container {
+  border-radius: 100px 100px 20px 20px;
+  overflow: hidden;
+}
+
+.dots-pattern {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
