@@ -4,7 +4,7 @@ Portfolio interactif présentant mes projets en Product Management IA & Santé.
 
 ## 🚀 Site en ligne
 
-[Voir le portfolio](https://dorisak.github.io/Portfolio-Fun/)
+[Voir le portfolio](https://dorisak.github.io/Portfolio/)
 
 ## 🛠 Stack technique
 
