@@ -84,8 +84,8 @@ export const PROJECTS: Project[] = [
       'Claude','Gemini','SwiftUI', 'Vision Framework', 'Supabase', 'Core Data'
     ],
     mockups: [
-      { type: 'patient', url: '/Portfolio/assets/pilulu-patient.mp4' },
-      { type: 'aidant', url: '/Portfolio/assets/pilulu-aidant.mp4' }
+      { type: 'patient', url: '/assets/pilulu-patient.mp4' },
+      { type: 'aidant', url: '/assets/pilulu-aidant.mp4' }
     ]
   }
 ];
