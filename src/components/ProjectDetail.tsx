@@ -33,6 +33,18 @@ export default function ProjectDetail({ project, onBack }: ProjectDetailProps) {
 
   const currentMockup = project.mockups?.find(m => m.type === view)?.url;
 
+  // Définir les sous-titres pour MedVocal
+  const mockupSubtitles: Record<string, { patient: string; aidant: string }> = {
+    medvocal: {
+      patient: 'Dashboard médecin',
+      aidant: 'Captation de la consultation'
+    }
+  };
+
+  const currentSubtitle = project.id === 'medvocal'
+    ? mockupSubtitles.medvocal[view]
+    : view === 'patient' ? 'Patient' : 'Aidant';
+
   return (
     <motion.div 
       initial={{ opacity: 0 }}
@@ -60,12 +72,19 @@ export default function ProjectDetail({ project, onBack }: ProjectDetailProps) {
       <div className="max-w-6xl mx-auto p-6 md:p-12 lg:p-20">
         {/* Title Section */}
         <header className="mb-20">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-block bg-brand-blue/10 text-brand-blue px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest mb-6"
+            className="flex items-center gap-2 mb-6"
           >
-            {project.category}
+            <span className="inline-block bg-brand-blue/10 text-brand-blue px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+              {project.category}
+            </span>
+            {project.id === 'medvocal' && (
+              <span className="inline-block bg-brand-orange text-white px-2 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                WIP
+              </span>
+            )}
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
@@ -142,89 +161,135 @@ export default function ProjectDetail({ project, onBack }: ProjectDetailProps) {
         {/* Interactive Mockup Section - Premium Device */}
         <section className="mb-32 bg-brand-dark text-white rounded-[3rem] p-12 lg:p-24 overflow-hidden relative">
           <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-blue/20 to-transparent pointer-events-none"></div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
-            <div className="lg:col-span-5 flex flex-col items-center">
+
+          {project.id === 'medvocal' ? (
+            // Structure pleine largeur pour MedVocal
+            <div className="flex flex-col items-center w-full relative z-10">
               <div className="flex bg-white/10 backdrop-blur-md p-1.5 rounded-2xl mb-12">
-                <button 
+                <button
                   onClick={() => setView('patient')}
                   className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${view === 'patient' ? 'bg-white text-brand-dark shadow-lg' : 'text-white/60 hover:text-white'}`}
                 >
-                  Patient
+                  Dashboard
                 </button>
-                <button 
+                <button
                   onClick={() => setView('aidant')}
                   className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${view === 'aidant' ? 'bg-white text-brand-dark shadow-lg' : 'text-white/60 hover:text-white'}`}
                 >
-                  Aidant
+                  Consultation
                 </button>
               </div>
 
-              {/* iPhone 15/16 Pro Style Mockup */}
-              <div className="relative w-[300px] h-[620px] bg-[#1a1a1a] rounded-[3.5rem] p-3 shadow-[0_0_80px_rgba(0,0,0,0.5)] border-[1px] border-white/20">
-                {/* Dynamic Island */}
-                <div className="absolute top-6 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-20"></div>
-                
-                {/* Screen */}
-                <div className="w-full h-full bg-black rounded-[2.8rem] overflow-hidden relative border border-white/5">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={view}
-                      initial={{ opacity: 0, scale: 1.1 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ duration: 0.5 }}
-                      className="w-full h-full"
-                    >
-                      {currentMockup?.endsWith('.mp4') ? (
-                        <video 
-                          src={currentMockup}
-                          autoPlay
-                          loop
-                          muted
-                          playsInline
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <img 
-                          src={currentMockup} 
-                          alt={`Pilulu ${view} view`} 
-                          className="w-full h-full object-cover"
-                          referrerPolicy="no-referrer"
-                        />
-                      )}
-                    </motion.div>
-                  </AnimatePresence>
+              <div className="w-full max-w-6xl">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={view}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -20 }}
+                    transition={{ duration: 0.5 }}
+                    className="flex flex-col items-center"
+                  >
+                    <div className="relative w-full rounded-[2rem] overflow-hidden border border-white/10 shadow-[0_0_60px_rgba(0,0,0,0.3)]">
+                      <img
+                        src={currentMockup}
+                        alt={currentSubtitle}
+                        className="w-full h-auto object-contain bg-white/5"
+                        referrerPolicy="no-referrer"
+                      />
+                    </div>
+                    <p className="mt-6 text-white/60 text-sm font-bold uppercase tracking-widest text-center">
+                      {currentSubtitle}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </div>
+          ) : (
+            // Grille pour Pilulu
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center relative z-10">
+              <div className="lg:col-span-5 flex flex-col items-center">
+                <div className="flex bg-white/10 backdrop-blur-md p-1.5 rounded-2xl mb-12">
+                  <button
+                    onClick={() => setView('patient')}
+                    className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${view === 'patient' ? 'bg-white text-brand-dark shadow-lg' : 'text-white/60 hover:text-white'}`}
+                  >
+                    Patient
+                  </button>
+                  <button
+                    onClick={() => setView('aidant')}
+                    className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${view === 'aidant' ? 'bg-white text-brand-dark shadow-lg' : 'text-white/60 hover:text-white'}`}
+                  >
+                    Aidant
+                  </button>
                 </div>
 
-                {/* Side Buttons */}
-                <div className="absolute -left-[2px] top-24 w-[3px] h-8 bg-white/20 rounded-r-sm"></div>
-                <div className="absolute -left-[2px] top-36 w-[3px] h-14 bg-white/20 rounded-r-sm"></div>
-                <div className="absolute -left-[2px] top-52 w-[3px] h-14 bg-white/20 rounded-r-sm"></div>
-                <div className="absolute -right-[2px] top-40 w-[3px] h-20 bg-white/20 rounded-l-sm"></div>
-              </div>
-            </div>
+                {/* iPhone 15/16 Pro Style Mockup */}
+                <div className="relative w-[300px] h-[620px] bg-[#1a1a1a] rounded-[3.5rem] p-3 shadow-[0_0_80px_rgba(0,0,0,0.5)] border-[1px] border-white/20">
+                  {/* Dynamic Island */}
+                  <div className="absolute top-6 left-1/2 -translate-x-1/2 w-24 h-6 bg-black rounded-full z-20"></div>
 
-            <div className="lg:col-span-7">
-              <h3 className="font-serif text-4xl md:text-5xl mb-8 leading-tight">
-                Une interface pensée pour <br />
-                <span className="text-brand-blue italic">la vulnérabilité.</span>
-              </h3>
-              <div className="grid grid-cols-2 gap-4">
-                {[
-                  { icon: Smartphone, title: "Senior-First" },
-                  { icon: Zap, title: "OCR Privé" },
-                  { icon: Users, title: "Lien Aidant" },
-                  { icon: ShieldCheck, title: "Santé Sécurisée" }
-                ].map((feature, i) => (
-                  <div key={i} className="bg-white/5 border border-white/10 p-6 rounded-3xl hover:bg-white/10 transition-colors flex flex-col items-center text-center">
-                    <feature.icon className="text-brand-blue mb-4" size={28} />
-                    <h4 className="font-bold text-[10px] uppercase tracking-[0.2em] leading-tight">{feature.title}</h4>
+                  {/* Screen */}
+                  <div className="w-full h-full bg-black rounded-[2.8rem] overflow-hidden relative border border-white/5">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={view}
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.95 }}
+                        transition={{ duration: 0.5 }}
+                        className="w-full h-full"
+                      >
+                        {currentMockup?.endsWith('.mp4') ? (
+                          <video
+                            src={currentMockup}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <img
+                            src={currentMockup}
+                            alt={`Pilulu ${view} view`}
+                            className="w-full h-full object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                        )}
+                      </motion.div>
+                    </AnimatePresence>
                   </div>
-                ))}
+
+                  {/* Side Buttons */}
+                  <div className="absolute -left-[2px] top-24 w-[3px] h-8 bg-white/20 rounded-r-sm"></div>
+                  <div className="absolute -left-[2px] top-36 w-[3px] h-14 bg-white/20 rounded-r-sm"></div>
+                  <div className="absolute -left-[2px] top-52 w-[3px] h-14 bg-white/20 rounded-r-sm"></div>
+                  <div className="absolute -right-[2px] top-40 w-[3px] h-20 bg-white/20 rounded-l-sm"></div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-7">
+                <h3 className="font-serif text-4xl md:text-5xl mb-8 leading-tight">
+                  Une interface pensée pour <br />
+                  <span className="text-brand-blue italic">la vulnérabilité.</span>
+                </h3>
+                <div className="grid grid-cols-2 gap-4">
+                  {[
+                    { icon: Smartphone, title: "Senior-First" },
+                    { icon: Zap, title: "OCR Privé" },
+                    { icon: Users, title: "Lien Aidant" },
+                    { icon: ShieldCheck, title: "Santé Sécurisée" }
+                  ].map((feature, i) => (
+                    <div key={i} className="bg-white/5 border border-white/10 p-6 rounded-3xl hover:bg-white/10 transition-colors flex flex-col items-center text-center">
+                      <feature.icon className="text-brand-blue mb-4" size={28} />
+                      <h4 className="font-bold text-[10px] uppercase tracking-[0.2em] leading-tight">{feature.title}</h4>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          )}
         </section>
 
         {/* Product Decisions */}
@@ -294,8 +359,8 @@ export default function ProjectDetail({ project, onBack }: ProjectDetailProps) {
               <h3 className="font-serif text-3xl mb-8 italic">Stack Technique</h3>
               <div className="flex flex-wrap gap-2">
                 {project.stack?.map((tech, i) => {
-                  const isClaude = tech.toLowerCase() === 'claude';
-                  const isGemini = tech.toLowerCase() === 'gemini';
+                  const isClaude = tech.toLowerCase().includes('claude');
+                  const isGemini = tech.toLowerCase().includes('gemini');
                   return (
                     <span key={i} className="px-4 py-2 bg-brand-dark text-white rounded-full text-[10px] font-bold uppercase tracking-widest flex items-center">
                       {isClaude && <ClaudeIcon className="mr-2 text-[#D97757]" />}

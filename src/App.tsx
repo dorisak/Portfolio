@@ -32,9 +32,9 @@ export default function App() {
 
   if (selectedProject) {
     return (
-      <ProjectDetail 
-        project={selectedProject} 
-        onBack={() => setSelectedProject(null)} 
+      <ProjectDetail
+        project={selectedProject}
+        onBack={() => setSelectedProject(null)}
       />
     );
   }
@@ -65,18 +65,39 @@ export default function App() {
         </motion.div>
 
         {/* Action / CTA */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          onClick={() => setSelectedProject(PROJECTS[0])}
-          className="md:col-span-2 lg:col-span-2 bg-brand-blue rounded-[2.5rem] p-8 flex flex-col justify-center items-center text-center group cursor-pointer"
+          className="md:col-span-2 lg:col-span-2 bg-brand-blue rounded-[2.5rem] p-8 flex flex-col justify-center items-center text-center gap-6"
         >
-          <div className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full flex items-center gap-2 group-hover:bg-white/30 transition-colors">
-            <span className="text-white font-bold text-lg">Voir le projet</span>
-            <ArrowUpRight className="text-white w-6 h-6" />
+          {/* Pilulu CTA */}
+          <div className="flex flex-col items-center">
+            <div
+              onClick={() => setSelectedProject(PROJECTS[0])}
+              className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full flex items-center gap-2 hover:bg-white/30 transition-colors cursor-pointer group"
+            >
+              <span className="text-white font-bold text-lg">Voir Pilulu</span>
+              <ArrowUpRight className="text-white w-6 h-6" />
+            </div>
+            <p className="text-white/70 text-xs mt-3 font-bold uppercase tracking-widest">
+              {PROJECTS[0].category}
+            </p>
           </div>
-          <p className="text-white/70 text-xs mt-4 font-bold uppercase tracking-widest">Pilulu iOS · 2026</p>
+
+          {/* MedVocal CTA */}
+          <div className="flex flex-col items-center">
+            <div
+              onClick={() => setSelectedProject(PROJECTS[1])}
+              className="bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full flex items-center gap-2 hover:bg-white/30 transition-colors cursor-pointer group"
+            >
+              <span className="text-white font-bold text-lg">Voir MedVocal</span>
+              <ArrowUpRight className="text-white w-6 h-6" />
+            </div>
+            <p className="text-white/70 text-xs mt-3 font-bold uppercase tracking-widest">
+              {PROJECTS[1].category}
+            </p>
+          </div>
         </motion.div>
 
         {/* Team / Collaboration Section */}
