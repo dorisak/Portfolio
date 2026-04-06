@@ -26,6 +26,7 @@ import {
 import { PROJECTS, Project } from "./types";
 import { useState } from "react";
 import ProjectDetail from "./components/ProjectDetail";
+import { trackSocialClick } from "./lib/analytics";
 
 export default function App() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
@@ -209,18 +210,20 @@ export default function App() {
             <p className="text-brand-dark/60">Available for innovative Product roles.</p>
           </div>
           <div className="flex gap-4">
-            <a 
-              href="https://www.linkedin.com/in/dorisatchikiti/" 
+            <a
+              href="https://www.linkedin.com/in/dorisatchikiti/"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackSocialClick('LinkedIn')}
               className="w-14 h-14 bg-brand-dark rounded-2xl flex items-center justify-center text-white hover:bg-brand-blue transition-colors"
             >
               <Linkedin size={24} />
             </a>
-            <a 
-              href="https://x.com/HealthySlop" 
+            <a
+              href="https://x.com/HealthySlop"
               target="_blank"
               rel="noopener noreferrer"
+              onClick={() => trackSocialClick('Twitter')}
               className="w-14 h-14 bg-brand-dark rounded-2xl flex items-center justify-center text-white hover:bg-brand-orange transition-colors"
             >
               <Twitter size={24} />

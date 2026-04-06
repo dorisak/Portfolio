@@ -1,7 +1,8 @@
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, CheckCircle2, Smartphone, Users, ShieldCheck, Zap } from "lucide-react";
 import { Project } from "../types";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { trackProjectView, trackMediaSwitch, trackSocialClick } from "../lib/analytics";
 
 const ClaudeIcon = ({ size = 14, className = "" }: { size?: number, className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
@@ -31,7 +32,26 @@ interface ProjectDetailProps {
 export default function ProjectDetail({ project, onBack }: ProjectDetailProps) {
   const [view, setView] = useState<'patient' | 'aidant'>('patient');
 
+  // Track project view on component mount
+  useEffect(() => {
+    trackProjectView(project.title);
+  }, [project.title]);
+
   const currentMockup = project.mockups?.find(m => m.type === view)?.url;
+
+  // Handle view change with tracking
+  const handleViewChange = (newView: 'patient' | 'aidant') => {
+    setView(newView);
+
+    // Track media switch based on project type
+    if (project.id === 'medvocal') {
+      // MedVocal uses images
+      trackMediaSwitch(project.id, 'image', newView);
+    } else {
+      // Pilulu uses videos
+      trackMediaSwitch(project.id, 'video', newView);
+    }
+  };
 
   // Définir les sous-titres pour MedVocal
   const mockupSubtitles: Record<string, { patient: string; aidant: string }> = {
@@ -167,13 +187,13 @@ export default function ProjectDetail({ project, onBack }: ProjectDetailProps) {
             <div className="flex flex-col items-center w-full relative z-10">
               <div className="flex bg-white/10 backdrop-blur-md p-1.5 rounded-2xl mb-12">
                 <button
-                  onClick={() => setView('patient')}
+                  onClick={() => handleViewChange('patient')}
                   className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${view === 'patient' ? 'bg-white text-brand-dark shadow-lg' : 'text-white/60 hover:text-white'}`}
                 >
                   Dashboard
                 </button>
                 <button
-                  onClick={() => setView('aidant')}
+                  onClick={() => handleViewChange('aidant')}
                   className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${view === 'aidant' ? 'bg-white text-brand-dark shadow-lg' : 'text-white/60 hover:text-white'}`}
                 >
                   Consultation
@@ -211,13 +231,13 @@ export default function ProjectDetail({ project, onBack }: ProjectDetailProps) {
               <div className="lg:col-span-5 flex flex-col items-center">
                 <div className="flex bg-white/10 backdrop-blur-md p-1.5 rounded-2xl mb-12">
                   <button
-                    onClick={() => setView('patient')}
+                    onClick={() => handleViewChange('patient')}
                     className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${view === 'patient' ? 'bg-white text-brand-dark shadow-lg' : 'text-white/60 hover:text-white'}`}
                   >
                     Patient
                   </button>
                   <button
-                    onClick={() => setView('aidant')}
+                    onClick={() => handleViewChange('aidant')}
                     className={`px-6 py-2.5 rounded-xl text-xs font-bold uppercase tracking-widest transition-all ${view === 'aidant' ? 'bg-white text-brand-dark shadow-lg' : 'text-white/60 hover:text-white'}`}
                   >
                     Aidant
@@ -373,10 +393,11 @@ export default function ProjectDetail({ project, onBack }: ProjectDetailProps) {
             </div>
             <div className="flex flex-col justify-end items-end text-right">
               <p className="font-serif text-2xl mb-4 italic">Prêt pour le futur de la santé ?</p>
-              <a 
+              <a
                 href="https://x.com/HealthySlop"
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackSocialClick('Twitter')}
                 className="bg-brand-blue text-white px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-brand-dark transition-colors shadow-lg shadow-brand-blue/20 inline-block"
               >
                 Suivre ma veille IA & Santé
